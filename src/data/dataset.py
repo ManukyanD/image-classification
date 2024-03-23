@@ -10,6 +10,8 @@ from transformers import ViTImageProcessor
 
 train_dataset, test_dataset = load_dataset('cifar10', split=['train', 'test'])
 classes = train_dataset.features['label'].names
+id2label = {index: label for index, label in enumerate(classes)}
+label2id = {label: index for index, label in enumerate(classes)}
 encodings = [torch.nn.functional.one_hot(torch.tensor(index), len(classes)).float() for index in range(len(classes))]
 
 processor = ViTImageProcessor.from_pretrained("google/vit-base-patch16-224-in21k")

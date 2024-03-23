@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from transformers import ViTForImageClassification
 
-from src.data.dataset import train_dataset, test_dataset, classes, collate
+from src.data.dataset import train_dataset, test_dataset, classes, collate, id2label, label2id
 from src.util.args_parser import parse_args
 from src.util.device import to_device
 
@@ -75,7 +75,9 @@ def main():
     test_loader = DataLoader(test_dataset, collate_fn=collate, batch_size=args.batch_size, shuffle=True)
     model = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224-in21k',
                                                       problem_type="multi_label_classification",
-                                                      num_labels=len(classes))
+                                                      num_labels=len(classes),
+                                                      id2label=id2label,
+                                                      label2id=label2id)
     to_device(model)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
